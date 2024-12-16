@@ -6,26 +6,35 @@ package graph
 
 import (
 	"context"
-	"fmt"
+	"encoding/json"
+	"net/http"
 
 	"github.com/medwards2009/waittimewizard-api/graph/model"
 )
 
-// CreateTodo is the resolver for the createTodo field.
-func (r *mutationResolver) CreateTodo(ctx context.Context, input model.NewTodo) (*model.Todo, error) {
-	panic(fmt.Errorf("not implemented: CreateTodo - createTodo"))
-}
+// Destinations is the resolver for the destinations field.
+func (r *queryResolver) Destinations(ctx context.Context) ([]*model.Destination, error) {
+	resp, err := http.Get("https://api.themeparks.wiki/v1/destinations")
 
-// Todos is the resolver for the todos field.
-func (r *queryResolver) Todos(ctx context.Context) ([]*model.Todo, error) {
-	panic(fmt.Errorf("not implemented: Todos - todos"))
-}
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
 
-// Mutation returns MutationResolver implementation.
-func (r *Resolver) Mutation() MutationResolver { return &mutationResolver{r} }
+	// Unmarshal the response into a map to extract the destinations field
+	var result map[string]json.RawMessage
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+		return nil, err
+	}
+	var destinations []*model.Destination
+	if err := json.Unmarshal(result["destinations"], &destinations); err != nil {
+		return nil, err
+	}
+
+	return destinations, nil
+}
 
 // Query returns QueryResolver implementation.
 func (r *Resolver) Query() QueryResolver { return &queryResolver{r} }
 
-type mutationResolver struct{ *Resolver }
 type queryResolver struct{ *Resolver }

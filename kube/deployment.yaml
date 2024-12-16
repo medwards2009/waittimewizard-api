@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: waittime-api
+  namespace: waittime-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: waittime-api
+  template:
+    metadata:
+      labels:
+        app: waittime-api
+    spec:
+      containers:
+        - name: waittime-api
+          image: medwards2009/waittimewizard-api:latest
+          ports:
+            - containerPort: 8080

@@ -2,27 +2,71 @@
 #
 # https://gqlgen.com/getting-started/
 
-type Todo {
-  id: ID!
-  text: String!
-  done: Boolean!
-  user: User!
-}
-
-type User {
+type Park {
   id: ID!
   name: String!
 }
 
+type Destination {
+  id: ID!
+  name: String!
+  slug: String!
+  parks: [Park!]!
+}
+
 type Query {
-  todos: [Todo!]!
+  destinations: [Destination!]!
 }
 
-input NewTodo {
-  text: String!
-  userId: String!
-}
+# TODO: add this later
+# enum EntityType {
+#   "Attraction"
+#   ATTRACTION
+#   "Theme park primary name"
+#   DESTINATION
+#   "A sub park to to a destination ex. Hollywood Studios to Walt Disney World"
+#   PARK
+#   "Show"
+#   SHOW
+#   "Restaurant"
+#   RESTAURANT
+# }
 
-type Mutation {
-  createTodo(input: NewTodo!): Todo!
-}
+# enum StatusType {
+#   CLOSED
+#   OPERATING
+# }
+
+# type Queue {
+#   # TBD
+# }
+
+# type ShowTime {
+#   type: String!
+#   startTime: String!
+#   endTime: String!
+# }
+
+# type LiveDataListItem {
+#   id: ID!
+#   name: String!
+#   entityType: EntityType!
+#   status: StatusType!
+#   lastUpdated: String!
+#   queue: QueueType
+#   showTimes: [ShowTime]
+# }
+
+# type LiveData {
+#   id: ID!
+#   name: String!
+#   entityType: EntityType!
+#   timezone: String!
+#   liveData: LiveDataListItem!
+# }
+
+# # TODO: Add ability for user to be able to search by EntityType
+# type Query {
+#   liveData(input: ID!): LiveData!
+# }
+

@@ -1,6 +1,6 @@
 module github.com/medwards2009/waittimewizard-api
 
-go 1.23.3
+go 1.23
 
 require (
 	github.com/99designs/gqlgen v0.17.57

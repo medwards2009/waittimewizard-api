@@ -9,3 +9,6 @@ docker-push:
 
 docker-pull:
 	docker pull medwards2009/waittimewizard-api:latest
+
+dev:
+	go run server.go

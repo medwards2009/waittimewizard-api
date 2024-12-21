@@ -41,6 +41,35 @@ func (r *queryResolver) Destinations(ctx context.Context) ([]*model.Destination,
 	return result, nil
 }
 
+// LiveData is the resolver for the liveData field.
+func (r *queryResolver) LiveData(ctx context.Context, id string, entityType *model.EntityType) (*model.LiveData, error) {
+	fetchedData, err := fetchData.FetchLiveData(id)
+	if err != nil {
+		return nil, err
+	}
+
+	var filteredLiveData []*model.LiveDataListItem
+	if entityType == nil {
+		filteredLiveData = fetchedData.LiveData
+	} else {
+		for _, entity := range fetchedData.LiveData {
+			if entity.EntityType == *entityType {
+				filteredLiveData = append(filteredLiveData, entity)
+			}
+		}
+	}
+
+	var result = &model.LiveData{
+		ID:         fetchedData.ID,
+		Name:       fetchedData.Name,
+		EntityType: fetchedData.EntityType,
+		Timezone:   fetchedData.Timezone,
+		LiveData:   filteredLiveData,
+	}
+
+	return result, nil
+}
+
 // Query returns QueryResolver implementation.
 func (r *Resolver) Query() QueryResolver { return &queryResolver{r} }
 

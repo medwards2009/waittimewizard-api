@@ -16,57 +16,58 @@ type Destination {
 
 type Query {
   destinations: [Destination!]!
+  liveData(id: ID!, entityType: EntityType): LiveData!
 }
 
 # TODO: add this later
-# enum EntityType {
-#   "Attraction"
-#   ATTRACTION
-#   "Theme park primary name"
-#   DESTINATION
-#   "A sub park to to a destination ex. Hollywood Studios to Walt Disney World"
-#   PARK
-#   "Show"
-#   SHOW
-#   "Restaurant"
-#   RESTAURANT
-# }
+enum EntityType {
+  "Attraction"
+  ATTRACTION
+  "Theme park primary name"
+  DESTINATION
+  "A sub park to to a destination ex. Hollywood Studios to Walt Disney World"
+  PARK
+  "Show"
+  SHOW
+  "Restaurant"
+  RESTAURANT
+}
 
-# enum StatusType {
-#   CLOSED
-#   OPERATING
-# }
+enum StatusType {
+  CLOSED
+  OPERATING
+}
 
-# type Queue {
-#   # TBD
-# }
+type WaitTime {
+  waitTime: Int
+}
 
-# type ShowTime {
-#   type: String!
-#   startTime: String!
-#   endTime: String!
-# }
+type Queue {
+  standby: WaitTime
+}
 
-# type LiveDataListItem {
-#   id: ID!
-#   name: String!
-#   entityType: EntityType!
-#   status: StatusType!
-#   lastUpdated: String!
-#   queue: QueueType
-#   showTimes: [ShowTime]
-# }
+type Time {
+  type: String!
+  startTime: String!
+  endTime: String!
+}
 
-# type LiveData {
-#   id: ID!
-#   name: String!
-#   entityType: EntityType!
-#   timezone: String!
-#   liveData: LiveDataListItem!
-# }
+type LiveDataListItem {
+  id: ID!
+  name: String!
+  entityType: EntityType!
+  status: StatusType!
+  lastUpdated: String!
+  queue: Queue
+  showTimes: [Time]
+  operatingHours: [Time]
+}
 
-# # TODO: Add ability for user to be able to search by EntityType
-# type Query {
-#   liveData(input: ID!): LiveData!
-# }
+type LiveData {
+  id: ID!
+  name: String!
+  entityType: EntityType!
+  timezone: String!
+  liveData: [LiveDataListItem]!
+}
 

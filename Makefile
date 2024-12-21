@@ -10,5 +10,8 @@ docker-push:
 docker-pull:
 	docker pull medwards2009/waittimewizard-api:latest
 
+gql-gen:
+	go run github.com/99designs/gqlgen generate
+
 dev:
 	go run server.go

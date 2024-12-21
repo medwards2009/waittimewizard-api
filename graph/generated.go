@@ -53,6 +53,25 @@ type ComplexityRoot struct {
 		Slug  func(childComplexity int) int
 	}
 
+	LiveData struct {
+		EntityType func(childComplexity int) int
+		ID         func(childComplexity int) int
+		LiveData   func(childComplexity int) int
+		Name       func(childComplexity int) int
+		Timezone   func(childComplexity int) int
+	}
+
+	LiveDataListItem struct {
+		EntityType     func(childComplexity int) int
+		ID             func(childComplexity int) int
+		LastUpdated    func(childComplexity int) int
+		Name           func(childComplexity int) int
+		OperatingHours func(childComplexity int) int
+		Queue          func(childComplexity int) int
+		ShowTimes      func(childComplexity int) int
+		Status         func(childComplexity int) int
+	}
+
 	Park struct {
 		ID   func(childComplexity int) int
 		Name func(childComplexity int) int
@@ -60,11 +79,27 @@ type ComplexityRoot struct {
 
 	Query struct {
 		Destinations func(childComplexity int) int
+		LiveData     func(childComplexity int, id string, entityType *model.EntityType) int
+	}
+
+	Queue struct {
+		Standby func(childComplexity int) int
+	}
+
+	Time struct {
+		EndTime   func(childComplexity int) int
+		StartTime func(childComplexity int) int
+		Type      func(childComplexity int) int
+	}
+
+	WaitTime struct {
+		WaitTime func(childComplexity int) int
 	}
 }
 
 type QueryResolver interface {
 	Destinations(ctx context.Context) ([]*model.Destination, error)
+	LiveData(ctx context.Context, id string, entityType *model.EntityType) (*model.LiveData, error)
 }
 
 type executableSchema struct {
@@ -114,6 +149,97 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Destination.Slug(childComplexity), true
 
+	case "LiveData.entityType":
+		if e.complexity.LiveData.EntityType == nil {
+			break
+		}
+
+		return e.complexity.LiveData.EntityType(childComplexity), true
+
+	case "LiveData.id":
+		if e.complexity.LiveData.ID == nil {
+			break
+		}
+
+		return e.complexity.LiveData.ID(childComplexity), true
+
+	case "LiveData.liveData":
+		if e.complexity.LiveData.LiveData == nil {
+			break
+		}
+
+		return e.complexity.LiveData.LiveData(childComplexity), true
+
+	case "LiveData.name":
+		if e.complexity.LiveData.Name == nil {
+			break
+		}
+
+		return e.complexity.LiveData.Name(childComplexity), true
+
+	case "LiveData.timezone":
+		if e.complexity.LiveData.Timezone == nil {
+			break
+		}
+
+		return e.complexity.LiveData.Timezone(childComplexity), true
+
+	case "LiveDataListItem.entityType":
+		if e.complexity.LiveDataListItem.EntityType == nil {
+			break
+		}
+
+		return e.complexity.LiveDataListItem.EntityType(childComplexity), true
+
+	case "LiveDataListItem.id":
+		if e.complexity.LiveDataListItem.ID == nil {
+			break
+		}
+
+		return e.complexity.LiveDataListItem.ID(childComplexity), true
+
+	case "LiveDataListItem.lastUpdated":
+		if e.complexity.LiveDataListItem.LastUpdated == nil {
+			break
+		}
+
+		return e.complexity.LiveDataListItem.LastUpdated(childComplexity), true
+
+	case "LiveDataListItem.name":
+		if e.complexity.LiveDataListItem.Name == nil {
+			break
+		}
+
+		return e.complexity.LiveDataListItem.Name(childComplexity), true
+
+	case "LiveDataListItem.operatingHours":
+		if e.complexity.LiveDataListItem.OperatingHours == nil {
+			break
+		}
+
+		return e.complexity.LiveDataListItem.OperatingHours(childComplexity), true
+
+	case "LiveDataListItem.queue":
+		if e.complexity.LiveDataListItem.Queue == nil {
+			break
+		}
+
+		return e.complexity.LiveDataListItem.Queue(childComplexity), true
+
+	case "LiveDataListItem.showTimes":
+		if e.complexity.LiveDataListItem.ShowTimes == nil {
+			break
+		}
+
+		return e.complexity.LiveDataListItem.ShowTimes(childComplexity), true
+
+	case "LiveDataListItem.status":
+		if e.complexity.LiveDataListItem.Status == nil {
+			break
+		}
+
+		return e.complexity.LiveDataListItem.Status(childComplexity), true
+
 	case "Park.id":
 		if e.complexity.Park.ID == nil {
 			break
@@ -134,6 +260,53 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.Destinations(childComplexity), true
+
+	case "Query.liveData":
+		if e.complexity.Query.LiveData == nil {
+			break
+		}
+
+		args, err := ec.field_Query_liveData_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.LiveData(childComplexity, args["id"].(string), args["entityType"].(*model.EntityType)), true
+
+	case "Queue.standby":
+		if e.complexity.Queue.Standby == nil {
+			break
+		}
+
+		return e.complexity.Queue.Standby(childComplexity), true
+
+	case "Time.endTime":
+		if e.complexity.Time.EndTime == nil {
+			break
+		}
+
+		return e.complexity.Time.EndTime(childComplexity), true
+
+	case "Time.startTime":
+		if e.complexity.Time.StartTime == nil {
+			break
+		}
+
+		return e.complexity.Time.StartTime(childComplexity), true
+
+	case "Time.type":
+		if e.complexity.Time.Type == nil {
+			break
+		}
+
+		return e.complexity.Time.Type(childComplexity), true
+
+	case "WaitTime.waitTime":
+		if e.complexity.WaitTime.WaitTime == nil {
+			break
+		}
+
+		return e.complexity.WaitTime.WaitTime(childComplexity), true
 
 	}
 	return 0, false
@@ -263,6 +436,47 @@ func (ec *executionContext) field_Query___type_argsName(
 	}
 
 	var zeroVal string
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_liveData_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	arg0, err := ec.field_Query_liveData_argsID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["id"] = arg0
+	arg1, err := ec.field_Query_liveData_argsEntityType(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["entityType"] = arg1
+	return args, nil
+}
+func (ec *executionContext) field_Query_liveData_argsID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (string, error) {
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+	if tmp, ok := rawArgs["id"]; ok {
+		return ec.unmarshalNID2string(ctx, tmp)
+	}
+
+	var zeroVal string
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_liveData_argsEntityType(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (*model.EntityType, error) {
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("entityType"))
+	if tmp, ok := rawArgs["entityType"]; ok {
+		return ec.unmarshalOEntityType2ᚖgithubᚗcomᚋmedwards2009ᚋwaittimewizardᚑapiᚋgraphᚋmodelᚐEntityType(ctx, tmp)
+	}
+
+	var zeroVal *model.EntityType
 	return zeroVal, nil
 }
 
@@ -502,6 +716,607 @@ func (ec *executionContext) fieldContext_Destination_parks(_ context.Context, fi
 	return fc, nil
 }
 
+func (ec *executionContext) _LiveData_id(ctx context.Context, field graphql.CollectedField, obj *model.LiveData) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_LiveData_id(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNID2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_LiveData_id(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "LiveData",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type ID does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _LiveData_name(ctx context.Context, field graphql.CollectedField, obj *model.LiveData) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_LiveData_name(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Name, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_LiveData_name(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "LiveData",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _LiveData_entityType(ctx context.Context, field graphql.CollectedField, obj *model.LiveData) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_LiveData_entityType(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.EntityType, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(model.EntityType)
+	fc.Result = res
+	return ec.marshalNEntityType2githubᚗcomᚋmedwards2009ᚋwaittimewizardᚑapiᚋgraphᚋmodelᚐEntityType(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_LiveData_entityType(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "LiveData",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type EntityType does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _LiveData_timezone(ctx context.Context, field graphql.CollectedField, obj *model.LiveData) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_LiveData_timezone(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Timezone, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_LiveData_timezone(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "LiveData",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _LiveData_liveData(ctx context.Context, field graphql.CollectedField, obj *model.LiveData) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_LiveData_liveData(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.LiveData, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*model.LiveDataListItem)
+	fc.Result = res
+	return ec.marshalNLiveDataListItem2ᚕᚖgithubᚗcomᚋmedwards2009ᚋwaittimewizardᚑapiᚋgraphᚋmodelᚐLiveDataListItem(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_LiveData_liveData(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "LiveData",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_LiveDataListItem_id(ctx, field)
+			case "name":
+				return ec.fieldContext_LiveDataListItem_name(ctx, field)
+			case "entityType":
+				return ec.fieldContext_LiveDataListItem_entityType(ctx, field)
+			case "status":
+				return ec.fieldContext_LiveDataListItem_status(ctx, field)
+			case "lastUpdated":
+				return ec.fieldContext_LiveDataListItem_lastUpdated(ctx, field)
+			case "queue":
+				return ec.fieldContext_LiveDataListItem_queue(ctx, field)
+			case "showTimes":
+				return ec.fieldContext_LiveDataListItem_showTimes(ctx, field)
+			case "operatingHours":
+				return ec.fieldContext_LiveDataListItem_operatingHours(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type LiveDataListItem", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _LiveDataListItem_id(ctx context.Context, field graphql.CollectedField, obj *model.LiveDataListItem) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_LiveDataListItem_id(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNID2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_LiveDataListItem_id(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "LiveDataListItem",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type ID does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _LiveDataListItem_name(ctx context.Context, field graphql.CollectedField, obj *model.LiveDataListItem) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_LiveDataListItem_name(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Name, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_LiveDataListItem_name(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "LiveDataListItem",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _LiveDataListItem_entityType(ctx context.Context, field graphql.CollectedField, obj *model.LiveDataListItem) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_LiveDataListItem_entityType(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.EntityType, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(model.EntityType)
+	fc.Result = res
+	return ec.marshalNEntityType2githubᚗcomᚋmedwards2009ᚋwaittimewizardᚑapiᚋgraphᚋmodelᚐEntityType(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_LiveDataListItem_entityType(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "LiveDataListItem",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type EntityType does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _LiveDataListItem_status(ctx context.Context, field graphql.CollectedField, obj *model.LiveDataListItem) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_LiveDataListItem_status(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Status, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(model.StatusType)
+	fc.Result = res
+	return ec.marshalNStatusType2githubᚗcomᚋmedwards2009ᚋwaittimewizardᚑapiᚋgraphᚋmodelᚐStatusType(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_LiveDataListItem_status(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "LiveDataListItem",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type StatusType does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _LiveDataListItem_lastUpdated(ctx context.Context, field graphql.CollectedField, obj *model.LiveDataListItem) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_LiveDataListItem_lastUpdated(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.LastUpdated, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_LiveDataListItem_lastUpdated(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "LiveDataListItem",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _LiveDataListItem_queue(ctx context.Context, field graphql.CollectedField, obj *model.LiveDataListItem) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_LiveDataListItem_queue(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Queue, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.Queue)
+	fc.Result = res
+	return ec.marshalOQueue2ᚖgithubᚗcomᚋmedwards2009ᚋwaittimewizardᚑapiᚋgraphᚋmodelᚐQueue(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_LiveDataListItem_queue(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "LiveDataListItem",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "standby":
+				return ec.fieldContext_Queue_standby(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Queue", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _LiveDataListItem_showTimes(ctx context.Context, field graphql.CollectedField, obj *model.LiveDataListItem) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_LiveDataListItem_showTimes(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ShowTimes, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*model.Time)
+	fc.Result = res
+	return ec.marshalOTime2ᚕᚖgithubᚗcomᚋmedwards2009ᚋwaittimewizardᚑapiᚋgraphᚋmodelᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_LiveDataListItem_showTimes(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "LiveDataListItem",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "type":
+				return ec.fieldContext_Time_type(ctx, field)
+			case "startTime":
+				return ec.fieldContext_Time_startTime(ctx, field)
+			case "endTime":
+				return ec.fieldContext_Time_endTime(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Time", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _LiveDataListItem_operatingHours(ctx context.Context, field graphql.CollectedField, obj *model.LiveDataListItem) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_LiveDataListItem_operatingHours(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.OperatingHours, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*model.Time)
+	fc.Result = res
+	return ec.marshalOTime2ᚕᚖgithubᚗcomᚋmedwards2009ᚋwaittimewizardᚑapiᚋgraphᚋmodelᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_LiveDataListItem_operatingHours(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "LiveDataListItem",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "type":
+				return ec.fieldContext_Time_type(ctx, field)
+			case "startTime":
+				return ec.fieldContext_Time_startTime(ctx, field)
+			case "endTime":
+				return ec.fieldContext_Time_endTime(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Time", field.Name)
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Park_id(ctx context.Context, field graphql.CollectedField, obj *model.Park) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Park_id(ctx, field)
 	if err != nil {
@@ -644,6 +1459,73 @@ func (ec *executionContext) fieldContext_Query_destinations(_ context.Context, f
 	return fc, nil
 }
 
+func (ec *executionContext) _Query_liveData(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_liveData(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().LiveData(rctx, fc.Args["id"].(string), fc.Args["entityType"].(*model.EntityType))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*model.LiveData)
+	fc.Result = res
+	return ec.marshalNLiveData2ᚖgithubᚗcomᚋmedwards2009ᚋwaittimewizardᚑapiᚋgraphᚋmodelᚐLiveData(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_liveData(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_LiveData_id(ctx, field)
+			case "name":
+				return ec.fieldContext_LiveData_name(ctx, field)
+			case "entityType":
+				return ec.fieldContext_LiveData_entityType(ctx, field)
+			case "timezone":
+				return ec.fieldContext_LiveData_timezone(ctx, field)
+			case "liveData":
+				return ec.fieldContext_LiveData_liveData(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type LiveData", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_liveData_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Query___type(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Query___type(ctx, field)
 	if err != nil {
@@ -768,6 +1650,224 @@ func (ec *executionContext) fieldContext_Query___schema(_ context.Context, field
 				return ec.fieldContext___Schema_directives(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type __Schema", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Queue_standby(ctx context.Context, field graphql.CollectedField, obj *model.Queue) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Queue_standby(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Standby, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.WaitTime)
+	fc.Result = res
+	return ec.marshalOWaitTime2ᚖgithubᚗcomᚋmedwards2009ᚋwaittimewizardᚑapiᚋgraphᚋmodelᚐWaitTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Queue_standby(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Queue",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "waitTime":
+				return ec.fieldContext_WaitTime_waitTime(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type WaitTime", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Time_type(ctx context.Context, field graphql.CollectedField, obj *model.Time) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Time_type(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Type, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Time_type(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Time",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Time_startTime(ctx context.Context, field graphql.CollectedField, obj *model.Time) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Time_startTime(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.StartTime, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Time_startTime(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Time",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Time_endTime(ctx context.Context, field graphql.CollectedField, obj *model.Time) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Time_endTime(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.EndTime, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Time_endTime(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Time",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _WaitTime_waitTime(ctx context.Context, field graphql.CollectedField, obj *model.WaitTime) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_WaitTime_waitTime(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.WaitTime, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*int)
+	fc.Result = res
+	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_WaitTime_waitTime(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "WaitTime",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
 		},
 	}
 	return fc, nil
@@ -2608,6 +3708,130 @@ func (ec *executionContext) _Destination(ctx context.Context, sel ast.SelectionS
 	return out
 }
 
+var liveDataImplementors = []string{"LiveData"}
+
+func (ec *executionContext) _LiveData(ctx context.Context, sel ast.SelectionSet, obj *model.LiveData) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, liveDataImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("LiveData")
+		case "id":
+			out.Values[i] = ec._LiveData_id(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "name":
+			out.Values[i] = ec._LiveData_name(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "entityType":
+			out.Values[i] = ec._LiveData_entityType(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "timezone":
+			out.Values[i] = ec._LiveData_timezone(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "liveData":
+			out.Values[i] = ec._LiveData_liveData(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var liveDataListItemImplementors = []string{"LiveDataListItem"}
+
+func (ec *executionContext) _LiveDataListItem(ctx context.Context, sel ast.SelectionSet, obj *model.LiveDataListItem) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, liveDataListItemImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("LiveDataListItem")
+		case "id":
+			out.Values[i] = ec._LiveDataListItem_id(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "name":
+			out.Values[i] = ec._LiveDataListItem_name(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "entityType":
+			out.Values[i] = ec._LiveDataListItem_entityType(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "status":
+			out.Values[i] = ec._LiveDataListItem_status(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "lastUpdated":
+			out.Values[i] = ec._LiveDataListItem_lastUpdated(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "queue":
+			out.Values[i] = ec._LiveDataListItem_queue(ctx, field, obj)
+		case "showTimes":
+			out.Values[i] = ec._LiveDataListItem_showTimes(ctx, field, obj)
+		case "operatingHours":
+			out.Values[i] = ec._LiveDataListItem_operatingHours(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
 var parkImplementors = []string{"Park"}
 
 func (ec *executionContext) _Park(ctx context.Context, sel ast.SelectionSet, obj *model.Park) graphql.Marshaler {
@@ -2693,6 +3917,28 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "liveData":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_liveData(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
 		case "__type":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Query___type(ctx, field)
@@ -2701,6 +3947,127 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Query___schema(ctx, field)
 			})
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var queueImplementors = []string{"Queue"}
+
+func (ec *executionContext) _Queue(ctx context.Context, sel ast.SelectionSet, obj *model.Queue) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, queueImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("Queue")
+		case "standby":
+			out.Values[i] = ec._Queue_standby(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var timeImplementors = []string{"Time"}
+
+func (ec *executionContext) _Time(ctx context.Context, sel ast.SelectionSet, obj *model.Time) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, timeImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("Time")
+		case "type":
+			out.Values[i] = ec._Time_type(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "startTime":
+			out.Values[i] = ec._Time_startTime(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "endTime":
+			out.Values[i] = ec._Time_endTime(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var waitTimeImplementors = []string{"WaitTime"}
+
+func (ec *executionContext) _WaitTime(ctx context.Context, sel ast.SelectionSet, obj *model.WaitTime) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, waitTimeImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("WaitTime")
+		case "waitTime":
+			out.Values[i] = ec._WaitTime_waitTime(ctx, field, obj)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -3119,6 +4486,16 @@ func (ec *executionContext) marshalNDestination2ᚖgithubᚗcomᚋmedwards2009�
 	return ec._Destination(ctx, sel, v)
 }
 
+func (ec *executionContext) unmarshalNEntityType2githubᚗcomᚋmedwards2009ᚋwaittimewizardᚑapiᚋgraphᚋmodelᚐEntityType(ctx context.Context, v interface{}) (model.EntityType, error) {
+	var res model.EntityType
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNEntityType2githubᚗcomᚋmedwards2009ᚋwaittimewizardᚑapiᚋgraphᚋmodelᚐEntityType(ctx context.Context, sel ast.SelectionSet, v model.EntityType) graphql.Marshaler {
+	return v
+}
+
 func (ec *executionContext) unmarshalNID2string(ctx context.Context, v interface{}) (string, error) {
 	res, err := graphql.UnmarshalID(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -3132,6 +4509,58 @@ func (ec *executionContext) marshalNID2string(ctx context.Context, sel ast.Selec
 		}
 	}
 	return res
+}
+
+func (ec *executionContext) marshalNLiveData2githubᚗcomᚋmedwards2009ᚋwaittimewizardᚑapiᚋgraphᚋmodelᚐLiveData(ctx context.Context, sel ast.SelectionSet, v model.LiveData) graphql.Marshaler {
+	return ec._LiveData(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNLiveData2ᚖgithubᚗcomᚋmedwards2009ᚋwaittimewizardᚑapiᚋgraphᚋmodelᚐLiveData(ctx context.Context, sel ast.SelectionSet, v *model.LiveData) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._LiveData(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNLiveDataListItem2ᚕᚖgithubᚗcomᚋmedwards2009ᚋwaittimewizardᚑapiᚋgraphᚋmodelᚐLiveDataListItem(ctx context.Context, sel ast.SelectionSet, v []*model.LiveDataListItem) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalOLiveDataListItem2ᚖgithubᚗcomᚋmedwards2009ᚋwaittimewizardᚑapiᚋgraphᚋmodelᚐLiveDataListItem(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	return ret
 }
 
 func (ec *executionContext) marshalNPark2ᚕᚖgithubᚗcomᚋmedwards2009ᚋwaittimewizardᚑapiᚋgraphᚋmodelᚐParkᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Park) graphql.Marshaler {
@@ -3186,6 +4615,16 @@ func (ec *executionContext) marshalNPark2ᚖgithubᚗcomᚋmedwards2009ᚋwaitti
 		return graphql.Null
 	}
 	return ec._Park(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalNStatusType2githubᚗcomᚋmedwards2009ᚋwaittimewizardᚑapiᚋgraphᚋmodelᚐStatusType(ctx context.Context, v interface{}) (model.StatusType, error) {
+	var res model.StatusType
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNStatusType2githubᚗcomᚋmedwards2009ᚋwaittimewizardᚑapiᚋgraphᚋmodelᚐStatusType(ctx context.Context, sel ast.SelectionSet, v model.StatusType) graphql.Marshaler {
+	return v
 }
 
 func (ec *executionContext) unmarshalNString2string(ctx context.Context, v interface{}) (string, error) {
@@ -3482,6 +4921,52 @@ func (ec *executionContext) marshalOBoolean2ᚖbool(ctx context.Context, sel ast
 	return res
 }
 
+func (ec *executionContext) unmarshalOEntityType2ᚖgithubᚗcomᚋmedwards2009ᚋwaittimewizardᚑapiᚋgraphᚋmodelᚐEntityType(ctx context.Context, v interface{}) (*model.EntityType, error) {
+	if v == nil {
+		return nil, nil
+	}
+	var res = new(model.EntityType)
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOEntityType2ᚖgithubᚗcomᚋmedwards2009ᚋwaittimewizardᚑapiᚋgraphᚋmodelᚐEntityType(ctx context.Context, sel ast.SelectionSet, v *model.EntityType) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return v
+}
+
+func (ec *executionContext) unmarshalOInt2ᚖint(ctx context.Context, v interface{}) (*int, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := graphql.UnmarshalInt(v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOInt2ᚖint(ctx context.Context, sel ast.SelectionSet, v *int) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	res := graphql.MarshalInt(*v)
+	return res
+}
+
+func (ec *executionContext) marshalOLiveDataListItem2ᚖgithubᚗcomᚋmedwards2009ᚋwaittimewizardᚑapiᚋgraphᚋmodelᚐLiveDataListItem(ctx context.Context, sel ast.SelectionSet, v *model.LiveDataListItem) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._LiveDataListItem(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalOQueue2ᚖgithubᚗcomᚋmedwards2009ᚋwaittimewizardᚑapiᚋgraphᚋmodelᚐQueue(ctx context.Context, sel ast.SelectionSet, v *model.Queue) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._Queue(ctx, sel, v)
+}
+
 func (ec *executionContext) unmarshalOString2ᚖstring(ctx context.Context, v interface{}) (*string, error) {
 	if v == nil {
 		return nil, nil
@@ -3496,6 +4981,61 @@ func (ec *executionContext) marshalOString2ᚖstring(ctx context.Context, sel as
 	}
 	res := graphql.MarshalString(*v)
 	return res
+}
+
+func (ec *executionContext) marshalOTime2ᚕᚖgithubᚗcomᚋmedwards2009ᚋwaittimewizardᚑapiᚋgraphᚋmodelᚐTime(ctx context.Context, sel ast.SelectionSet, v []*model.Time) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalOTime2ᚖgithubᚗcomᚋmedwards2009ᚋwaittimewizardᚑapiᚋgraphᚋmodelᚐTime(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	return ret
+}
+
+func (ec *executionContext) marshalOTime2ᚖgithubᚗcomᚋmedwards2009ᚋwaittimewizardᚑapiᚋgraphᚋmodelᚐTime(ctx context.Context, sel ast.SelectionSet, v *model.Time) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._Time(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalOWaitTime2ᚖgithubᚗcomᚋmedwards2009ᚋwaittimewizardᚑapiᚋgraphᚋmodelᚐWaitTime(ctx context.Context, sel ast.SelectionSet, v *model.WaitTime) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._WaitTime(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalO__EnumValue2ᚕgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐEnumValueᚄ(ctx context.Context, sel ast.SelectionSet, v []introspection.EnumValue) graphql.Marshaler {

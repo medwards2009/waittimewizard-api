@@ -6,32 +6,68 @@ package graph
 
 import (
 	"context"
-	"encoding/json"
-	"net/http"
 
+	"github.com/medwards2009/waittimewizard-api/fetchData"
 	"github.com/medwards2009/waittimewizard-api/graph/model"
 )
 
 // Destinations is the resolver for the destinations field.
 func (r *queryResolver) Destinations(ctx context.Context) ([]*model.Destination, error) {
-	resp, err := http.Get("https://api.themeparks.wiki/v1/destinations")
-
+	fetchedData, err := fetchData.FetchDestinations()
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
 
-	// Unmarshal the response into a map to extract the destinations field
-	var result map[string]json.RawMessage
-	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+	// Create a new slice to hold the results
+	var result []*model.Destination
+
+	for _, dest := range fetchedData.Destinations {
+		var parks []*model.Park
+		for _, park := range dest.Parks {
+			parks = append(parks, &model.Park{
+				ID:   park.Id,
+				Name: park.Name,
+			})
+		}
+
+		result = append(result, &model.Destination{
+			ID:    dest.Id,
+			Name:  dest.Name,
+			Slug:  dest.Slug,
+			Parks: parks,
+		})
+	}
+
+	return result, nil
+}
+
+// LiveData is the resolver for the liveData field.
+func (r *queryResolver) LiveData(ctx context.Context, id string, entityType *model.EntityType) (*model.LiveData, error) {
+	fetchedData, err := fetchData.FetchLiveData(id)
+	if err != nil {
 		return nil, err
 	}
-	var destinations []*model.Destination
-	if err := json.Unmarshal(result["destinations"], &destinations); err != nil {
-		return nil, err
+
+	var filteredLiveData []*model.LiveDataListItem
+	if entityType == nil {
+		filteredLiveData = fetchedData.LiveData
+	} else {
+		for _, entity := range fetchedData.LiveData {
+			if entity.EntityType == *entityType {
+				filteredLiveData = append(filteredLiveData, entity)
+			}
+		}
 	}
 
-	return destinations, nil
+	var result = &model.LiveData{
+		ID:         fetchedData.ID,
+		Name:       fetchedData.Name,
+		EntityType: fetchedData.EntityType,
+		Timezone:   fetchedData.Timezone,
+		LiveData:   filteredLiveData,
+	}
+
+	return result, nil
 }
 
 // Query returns QueryResolver implementation.

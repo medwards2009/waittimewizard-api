@@ -30,8 +30,8 @@ type LiveDataListItem struct {
 	Status         StatusType `json:"status"`
 	LastUpdated    string     `json:"lastUpdated"`
 	Queue          *Queue     `json:"queue,omitempty"`
-	ShowTimes      []*Time    `json:"showTimes,omitempty"`
-	OperatingHours []*Time    `json:"operatingHours,omitempty"`
+	ShowTimes      []*Time    `json:"showTimes"`
+	OperatingHours []*Time    `json:"operatingHours"`
 }
 
 type Park struct {

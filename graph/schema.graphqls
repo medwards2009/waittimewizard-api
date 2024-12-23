@@ -59,8 +59,8 @@ type LiveDataListItem {
   status: StatusType!
   lastUpdated: String!
   queue: Queue
-  showTimes: [Time]
-  operatingHours: [Time]
+  showTimes: [Time]!
+  operatingHours: [Time]!
 }
 
 type LiveData {

@@ -1240,11 +1240,14 @@ func (ec *executionContext) _LiveDataListItem_showTimes(ctx context.Context, fie
 		return graphql.Null
 	}
 	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.([]*model.Time)
 	fc.Result = res
-	return ec.marshalOTime2ᚕᚖgithubᚗcomᚋmedwards2009ᚋwaittimewizardᚑapiᚋgraphᚋmodelᚐTime(ctx, field.Selections, res)
+	return ec.marshalNTime2ᚕᚖgithubᚗcomᚋmedwards2009ᚋwaittimewizardᚑapiᚋgraphᚋmodelᚐTime(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_LiveDataListItem_showTimes(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -1289,11 +1292,14 @@ func (ec *executionContext) _LiveDataListItem_operatingHours(ctx context.Context
 		return graphql.Null
 	}
 	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.([]*model.Time)
 	fc.Result = res
-	return ec.marshalOTime2ᚕᚖgithubᚗcomᚋmedwards2009ᚋwaittimewizardᚑapiᚋgraphᚋmodelᚐTime(ctx, field.Selections, res)
+	return ec.marshalNTime2ᚕᚖgithubᚗcomᚋmedwards2009ᚋwaittimewizardᚑapiᚋgraphᚋmodelᚐTime(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_LiveDataListItem_operatingHours(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -3807,8 +3813,14 @@ func (ec *executionContext) _LiveDataListItem(ctx context.Context, sel ast.Selec
 			out.Values[i] = ec._LiveDataListItem_queue(ctx, field, obj)
 		case "showTimes":
 			out.Values[i] = ec._LiveDataListItem_showTimes(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
 		case "operatingHours":
 			out.Values[i] = ec._LiveDataListItem_operatingHours(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -4642,6 +4654,44 @@ func (ec *executionContext) marshalNString2string(ctx context.Context, sel ast.S
 	return res
 }
 
+func (ec *executionContext) marshalNTime2ᚕᚖgithubᚗcomᚋmedwards2009ᚋwaittimewizardᚑapiᚋgraphᚋmodelᚐTime(ctx context.Context, sel ast.SelectionSet, v []*model.Time) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalOTime2ᚖgithubᚗcomᚋmedwards2009ᚋwaittimewizardᚑapiᚋgraphᚋmodelᚐTime(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	return ret
+}
+
 func (ec *executionContext) marshalN__Directive2githubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐDirective(ctx context.Context, sel ast.SelectionSet, v introspection.Directive) graphql.Marshaler {
 	return ec.___Directive(ctx, sel, &v)
 }
@@ -4981,47 +5031,6 @@ func (ec *executionContext) marshalOString2ᚖstring(ctx context.Context, sel as
 	}
 	res := graphql.MarshalString(*v)
 	return res
-}
-
-func (ec *executionContext) marshalOTime2ᚕᚖgithubᚗcomᚋmedwards2009ᚋwaittimewizardᚑapiᚋgraphᚋmodelᚐTime(ctx context.Context, sel ast.SelectionSet, v []*model.Time) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	ret := make(graphql.Array, len(v))
-	var wg sync.WaitGroup
-	isLen1 := len(v) == 1
-	if !isLen1 {
-		wg.Add(len(v))
-	}
-	for i := range v {
-		i := i
-		fc := &graphql.FieldContext{
-			Index:  &i,
-			Result: &v[i],
-		}
-		ctx := graphql.WithFieldContext(ctx, fc)
-		f := func(i int) {
-			defer func() {
-				if r := recover(); r != nil {
-					ec.Error(ctx, ec.Recover(ctx, r))
-					ret = nil
-				}
-			}()
-			if !isLen1 {
-				defer wg.Done()
-			}
-			ret[i] = ec.marshalOTime2ᚖgithubᚗcomᚋmedwards2009ᚋwaittimewizardᚑapiᚋgraphᚋmodelᚐTime(ctx, sel, v[i])
-		}
-		if isLen1 {
-			f(i)
-		} else {
-			go f(i)
-		}
-
-	}
-	wg.Wait()
-
-	return ret
 }
 
 func (ec *executionContext) marshalOTime2ᚖgithubᚗcomᚋmedwards2009ᚋwaittimewizardᚑapiᚋgraphᚋmodelᚐTime(ctx context.Context, sel ast.SelectionSet, v *model.Time) graphql.Marshaler {

@@ -31,11 +31,15 @@ enum EntityType {
   SHOW
   "Restaurant"
   RESTAURANT
+  "Hotel"
+  HOTEL
 }
 
 enum StatusType {
   CLOSED
   OPERATING
+  DOWN
+  REFURBISHMENT
 }
 
 type WaitTime {
@@ -44,12 +48,19 @@ type WaitTime {
 
 type Queue {
   standby: WaitTime
+
 }
 
 type Time {
   type: String!
   startTime: String!
   endTime: String!
+}
+
+type Forecast {
+  time: String
+  waitTime: Int
+  percentage: Int
 }
 
 type LiveDataListItem {
@@ -61,6 +72,7 @@ type LiveDataListItem {
   queue: Queue
   showTimes: [Time]!
   operatingHours: [Time]!
+  forecast: [Forecast]!
 }
 
 type LiveData {

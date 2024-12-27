@@ -13,5 +13,8 @@ docker-pull:
 gql-gen:
 	go run github.com/99designs/gqlgen generate
 
+gql-init:
+	go run github.com/99designs/gqlgen init
+
 dev:
 	go run server.go

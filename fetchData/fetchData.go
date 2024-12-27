@@ -30,7 +30,6 @@ func FetchDestinations() (*dataModels.Destinations, error) {
 	return responseObject, nil
 }
 
-// func fetchLiveData(id string) {
 func FetchLiveData(id string) (*model.LiveData, error) {
 	url := fmt.Sprintf("https://api.themeparks.wiki/v1/entity/%s/live", id)
 	resp, err := http.Get(url)
@@ -50,6 +49,4 @@ func FetchLiveData(id string) (*model.LiveData, error) {
 	json.Unmarshal(responseData, &responseObject)
 
 	return responseObject, nil
-	// TODO: add fetch with id and will need to build all
-	// return types of course
 }

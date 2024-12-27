@@ -53,6 +53,12 @@ type ComplexityRoot struct {
 		Slug  func(childComplexity int) int
 	}
 
+	Forecast struct {
+		Percentage func(childComplexity int) int
+		Time       func(childComplexity int) int
+		WaitTime   func(childComplexity int) int
+	}
+
 	LiveData struct {
 		EntityType func(childComplexity int) int
 		ID         func(childComplexity int) int
@@ -63,6 +69,7 @@ type ComplexityRoot struct {
 
 	LiveDataListItem struct {
 		EntityType     func(childComplexity int) int
+		Forecast       func(childComplexity int) int
 		ID             func(childComplexity int) int
 		LastUpdated    func(childComplexity int) int
 		Name           func(childComplexity int) int
@@ -149,6 +156,27 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Destination.Slug(childComplexity), true
 
+	case "Forecast.percentage":
+		if e.complexity.Forecast.Percentage == nil {
+			break
+		}
+
+		return e.complexity.Forecast.Percentage(childComplexity), true
+
+	case "Forecast.time":
+		if e.complexity.Forecast.Time == nil {
+			break
+		}
+
+		return e.complexity.Forecast.Time(childComplexity), true
+
+	case "Forecast.waitTime":
+		if e.complexity.Forecast.WaitTime == nil {
+			break
+		}
+
+		return e.complexity.Forecast.WaitTime(childComplexity), true
+
 	case "LiveData.entityType":
 		if e.complexity.LiveData.EntityType == nil {
 			break
@@ -190,6 +218,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.LiveDataListItem.EntityType(childComplexity), true
+
+	case "LiveDataListItem.forecast":
+		if e.complexity.LiveDataListItem.Forecast == nil {
+			break
+		}
+
+		return e.complexity.LiveDataListItem.Forecast(childComplexity), true
 
 	case "LiveDataListItem.id":
 		if e.complexity.LiveDataListItem.ID == nil {
@@ -716,6 +751,129 @@ func (ec *executionContext) fieldContext_Destination_parks(_ context.Context, fi
 	return fc, nil
 }
 
+func (ec *executionContext) _Forecast_time(ctx context.Context, field graphql.CollectedField, obj *model.Forecast) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Forecast_time(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Time, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Forecast_time(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Forecast",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Forecast_waitTime(ctx context.Context, field graphql.CollectedField, obj *model.Forecast) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Forecast_waitTime(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.WaitTime, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*int)
+	fc.Result = res
+	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Forecast_waitTime(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Forecast",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Forecast_percentage(ctx context.Context, field graphql.CollectedField, obj *model.Forecast) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Forecast_percentage(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Percentage, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*int)
+	fc.Result = res
+	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Forecast_percentage(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Forecast",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _LiveData_id(ctx context.Context, field graphql.CollectedField, obj *model.LiveData) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_LiveData_id(ctx, field)
 	if err != nil {
@@ -947,6 +1105,8 @@ func (ec *executionContext) fieldContext_LiveData_liveData(_ context.Context, fi
 				return ec.fieldContext_LiveDataListItem_showTimes(ctx, field)
 			case "operatingHours":
 				return ec.fieldContext_LiveDataListItem_operatingHours(ctx, field)
+			case "forecast":
+				return ec.fieldContext_LiveDataListItem_forecast(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type LiveDataListItem", field.Name)
 		},
@@ -1318,6 +1478,58 @@ func (ec *executionContext) fieldContext_LiveDataListItem_operatingHours(_ conte
 				return ec.fieldContext_Time_endTime(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Time", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _LiveDataListItem_forecast(ctx context.Context, field graphql.CollectedField, obj *model.LiveDataListItem) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_LiveDataListItem_forecast(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Forecast, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*model.Forecast)
+	fc.Result = res
+	return ec.marshalNForecast2ᚕᚖgithubᚗcomᚋmedwards2009ᚋwaittimewizardᚑapiᚋgraphᚋmodelᚐForecast(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_LiveDataListItem_forecast(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "LiveDataListItem",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "time":
+				return ec.fieldContext_Forecast_time(ctx, field)
+			case "waitTime":
+				return ec.fieldContext_Forecast_waitTime(ctx, field)
+			case "percentage":
+				return ec.fieldContext_Forecast_percentage(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Forecast", field.Name)
 		},
 	}
 	return fc, nil
@@ -3714,6 +3926,46 @@ func (ec *executionContext) _Destination(ctx context.Context, sel ast.SelectionS
 	return out
 }
 
+var forecastImplementors = []string{"Forecast"}
+
+func (ec *executionContext) _Forecast(ctx context.Context, sel ast.SelectionSet, obj *model.Forecast) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, forecastImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("Forecast")
+		case "time":
+			out.Values[i] = ec._Forecast_time(ctx, field, obj)
+		case "waitTime":
+			out.Values[i] = ec._Forecast_waitTime(ctx, field, obj)
+		case "percentage":
+			out.Values[i] = ec._Forecast_percentage(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
 var liveDataImplementors = []string{"LiveData"}
 
 func (ec *executionContext) _LiveData(ctx context.Context, sel ast.SelectionSet, obj *model.LiveData) graphql.Marshaler {
@@ -3818,6 +4070,11 @@ func (ec *executionContext) _LiveDataListItem(ctx context.Context, sel ast.Selec
 			}
 		case "operatingHours":
 			out.Values[i] = ec._LiveDataListItem_operatingHours(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "forecast":
+			out.Values[i] = ec._LiveDataListItem_forecast(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
@@ -4508,6 +4765,44 @@ func (ec *executionContext) marshalNEntityType2githubᚗcomᚋmedwards2009ᚋwai
 	return v
 }
 
+func (ec *executionContext) marshalNForecast2ᚕᚖgithubᚗcomᚋmedwards2009ᚋwaittimewizardᚑapiᚋgraphᚋmodelᚐForecast(ctx context.Context, sel ast.SelectionSet, v []*model.Forecast) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalOForecast2ᚖgithubᚗcomᚋmedwards2009ᚋwaittimewizardᚑapiᚋgraphᚋmodelᚐForecast(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	return ret
+}
+
 func (ec *executionContext) unmarshalNID2string(ctx context.Context, v interface{}) (string, error) {
 	res, err := graphql.UnmarshalID(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -4985,6 +5280,13 @@ func (ec *executionContext) marshalOEntityType2ᚖgithubᚗcomᚋmedwards2009ᚋ
 		return graphql.Null
 	}
 	return v
+}
+
+func (ec *executionContext) marshalOForecast2ᚖgithubᚗcomᚋmedwards2009ᚋwaittimewizardᚑapiᚋgraphᚋmodelᚐForecast(ctx context.Context, sel ast.SelectionSet, v *model.Forecast) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._Forecast(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalOInt2ᚖint(ctx context.Context, v interface{}) (*int, error) {

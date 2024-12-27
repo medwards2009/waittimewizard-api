@@ -15,6 +15,12 @@ type Destination struct {
 	Parks []*Park `json:"parks"`
 }
 
+type Forecast struct {
+	Time       *string `json:"time,omitempty"`
+	WaitTime   *int    `json:"waitTime,omitempty"`
+	Percentage *int    `json:"percentage,omitempty"`
+}
+
 type LiveData struct {
 	ID         string              `json:"id"`
 	Name       string              `json:"name"`
@@ -24,14 +30,15 @@ type LiveData struct {
 }
 
 type LiveDataListItem struct {
-	ID             string     `json:"id"`
-	Name           string     `json:"name"`
-	EntityType     EntityType `json:"entityType"`
-	Status         StatusType `json:"status"`
-	LastUpdated    string     `json:"lastUpdated"`
-	Queue          *Queue     `json:"queue,omitempty"`
-	ShowTimes      []*Time    `json:"showTimes"`
-	OperatingHours []*Time    `json:"operatingHours"`
+	ID             string      `json:"id"`
+	Name           string      `json:"name"`
+	EntityType     EntityType  `json:"entityType"`
+	Status         StatusType  `json:"status"`
+	LastUpdated    string      `json:"lastUpdated"`
+	Queue          *Queue      `json:"queue,omitempty"`
+	ShowTimes      []*Time     `json:"showTimes"`
+	OperatingHours []*Time     `json:"operatingHours"`
+	Forecast       []*Forecast `json:"forecast"`
 }
 
 type Park struct {
@@ -69,6 +76,8 @@ const (
 	EntityTypeShow EntityType = "SHOW"
 	// Restaurant
 	EntityTypeRestaurant EntityType = "RESTAURANT"
+	// Hotel
+	EntityTypeHotel EntityType = "HOTEL"
 )
 
 var AllEntityType = []EntityType{
@@ -77,11 +86,12 @@ var AllEntityType = []EntityType{
 	EntityTypePark,
 	EntityTypeShow,
 	EntityTypeRestaurant,
+	EntityTypeHotel,
 }
 
 func (e EntityType) IsValid() bool {
 	switch e {
-	case EntityTypeAttraction, EntityTypeDestination, EntityTypePark, EntityTypeShow, EntityTypeRestaurant:
+	case EntityTypeAttraction, EntityTypeDestination, EntityTypePark, EntityTypeShow, EntityTypeRestaurant, EntityTypeHotel:
 		return true
 	}
 	return false
@@ -111,18 +121,22 @@ func (e EntityType) MarshalGQL(w io.Writer) {
 type StatusType string
 
 const (
-	StatusTypeClosed    StatusType = "CLOSED"
-	StatusTypeOperating StatusType = "OPERATING"
+	StatusTypeClosed        StatusType = "CLOSED"
+	StatusTypeOperating     StatusType = "OPERATING"
+	StatusTypeDown          StatusType = "DOWN"
+	StatusTypeRefurbishment StatusType = "REFURBISHMENT"
 )
 
 var AllStatusType = []StatusType{
 	StatusTypeClosed,
 	StatusTypeOperating,
+	StatusTypeDown,
+	StatusTypeRefurbishment,
 }
 
 func (e StatusType) IsValid() bool {
 	switch e {
-	case StatusTypeClosed, StatusTypeOperating:
+	case StatusTypeClosed, StatusTypeOperating, StatusTypeDown, StatusTypeRefurbishment:
 		return true
 	}
 	return false

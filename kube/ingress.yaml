@@ -6,28 +6,28 @@ metadata:
 spec:
   ingressClassName: traefik
   rules:
-  - host: waittimewizard.info
-    http:
-      paths:
-      - path: /api
-        pathType: Prefix
-        backend:
-          service:
-            name: waittime-api-service
-            port:
-              number: 80
-  - host: www.waittimewizard.info
-    http:
-      paths:
-      - path: /api
-        pathType: Prefix
-        backend:
-          service:
-            name: waittime-api-service
-            port:
-              number: 80
+    - host: waittimewizard.info
+      http:
+        paths:
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: waittime-api-service
+                port:
+                  number: 80
+    - host: www.waittimewizard.info
+      http:
+        paths:
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: waittime-api-service
+                port:
+                  number: 80
   tls:
-  - hosts:
-    - waittimewizard.info
-    - www.waittimewizard.info
-    secretName: waittime-api-tls
+    - hosts:
+        - waittimewizard.info
+        - www.waittimewizard.info
+      secretName: waittime-wizard-tls

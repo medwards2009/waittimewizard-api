@@ -7,3 +7,5 @@ This is built on top of https://api.themeparks.wiki/doc/v1
 Graphiql available at: https://waittimewizard.info/api/v1/graphiql
 
 # Testing
+
+- Currently low coverage, mostly just boilerplate atm

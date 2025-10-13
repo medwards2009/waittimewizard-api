@@ -1,0 +1,4 @@
+ignore:
+  # GraphQL generated files
+  - "graph/generated.go" # Main generated GraphQL code
+  - "graph/model/models_gen.go" # Generated GraphQL models

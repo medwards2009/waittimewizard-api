@@ -18,3 +18,15 @@ gql-init:
 
 dev:
 	go run server.go
+
+test:
+	go test ./... -v
+
+test-coverage:
+	go test -cover ./...
+
+test-report:
+	go test -coverprofile=coverage.out ./...
+
+view-coverage:
+	go tool cover -html=coverage.out

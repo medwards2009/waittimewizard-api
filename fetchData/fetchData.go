@@ -10,8 +10,14 @@ import (
 	"github.com/medwards2009/waittimewizard-api/graph/model"
 )
 
+var BaseURL = "https://api.themeparks.wiki/v1"
+
 func FetchDestinations() (*dataModels.Destinations, error) {
-	resp, err := http.Get("https://api.themeparks.wiki/v1/destinations")
+	return FetchDestinationsWithBaseURL(BaseURL)
+}
+
+func FetchDestinationsWithBaseURL(baseURL string) (*dataModels.Destinations, error) {
+	resp, err := http.Get(baseURL + "/destinations")
 
 	if err != nil {
 		fmt.Println(err.Error())

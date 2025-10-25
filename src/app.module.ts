@@ -5,6 +5,7 @@ import { LiveController } from './live/live.controller';
 import { CommonModule } from './common/common.module';
 import { DestinationsService } from './destinations/destinations.service';
 import { LiveService } from './live/live.service';
+import { RootController } from './root/root.controller';
 
 @Module({
   imports: [
@@ -14,7 +15,7 @@ import { LiveService } from './live/live.service';
     }),
     CommonModule,
   ],
-  controllers: [DestinationsController, LiveController],
+  controllers: [DestinationsController, LiveController, RootController],
   providers: [DestinationsService, LiveService],
 })
 export class AppModule {}

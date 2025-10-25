@@ -11,9 +11,6 @@ async function bootstrap() {
     whitelist: true,
     transform: true,
   }));
-  
-  // Global prefix for all routes
-  app.setGlobalPrefix('api');
 
   // Setup Swagger
   const config = new DocumentBuilder()
@@ -25,10 +22,10 @@ async function bootstrap() {
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document);
+  SwaggerModule.setup('docs', app, document);
   
-  const port = process.env.PORT ?? 8080;
+  const port = 8080;
   await app.listen(port);
-  console.log(`Application is running on: http://localhost:${port}/api`);
+  console.log(`Application is running on: http://localhost:${port}`);
 }
 bootstrap();

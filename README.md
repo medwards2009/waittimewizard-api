@@ -30,14 +30,14 @@ npm run start:dev
 
 3. Access the API documentation:
 
-- Visit `http://localhost:3000/api-docs` for Swagger documentation
+- Visit `http://localhost:8080/api-docs` for Swagger documentation
 
 ## Environment Variables
 
 Create a `.env` file in the root directory:
 
 ```bash
-PORT=3000
+PORT=8080
 ```
 
 ## Data Attribution
